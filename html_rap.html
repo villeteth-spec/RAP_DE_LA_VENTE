@@ -24,3 +24,713 @@
   --sage-soft:#26372C; --mustard-soft:#3A3219; --terra-soft:#3F2620; --olive-soft:#30361A;
   --ok:#7FD39E; --ko:#F09080; --okbg:#1F3A29; --kobg:#45231E; color-scheme:dark}}
 :root[data-theme="dark"]{
+  --bg:#151912; --surface:#1F251B; --ink:#ECEFE4; --muted:#A4AC99; --line:#363F30;
+  --sage:#8DBA9E; --mustard:#E6C459; --terra:#E38A76; --olive:#B8C562;
+  --sage-soft:#26372C; --mustard-soft:#3A3219; --terra-soft:#3F2620; --olive-soft:#30361A;
+  --ok:#7FD39E; --ko:#F09080; --okbg:#1F3A29; --kobg:#45231E; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.55}
+.wrap{max-width:62rem;margin:0 auto;padding-inline:clamp(16px,4vw,32px);padding-block:0 4rem}
+h1,h2,h3{font-family:var(--display);line-height:1.08;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.7rem,4vw,2.4rem);font-weight:800}
+h3{font-size:1.2rem;font-weight:800}
+p{margin:0}
+.mono{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+.muted{color:var(--muted)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--mustard);outline-offset:2px}
+
+/* En-tête */
+header.hero{padding-block:2.5rem 1.5rem;display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:end}
+.hero h1{font-size:clamp(2.6rem,9vw,5.6rem);font-weight:800;letter-spacing:-.02em}
+.hero h1 span{display:block;color:var(--terra)}
+.hero .sub{margin-top:.9rem;max-width:36rem;color:var(--muted)}
+.wave{display:flex;gap:4px;align-items:end;height:84px}
+.wave i{width:9px;border-radius:5px;background:var(--c);height:var(--h);transform-origin:bottom}
+@media (prefers-reduced-motion:no-preference){.wave i{animation:pulse 1.3s ease-in-out infinite alternate;animation-delay:var(--d)}}
+@keyframes pulse{from{transform:scaleY(.45)}to{transform:scaleY(1)}}
+@media (max-width:560px){header.hero{grid-template-columns:1fr}.wave{height:50px}}
+
+/* Tracklist */
+nav.tracks{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-block:1px solid var(--line);margin-bottom:2rem}
+nav.tracks ol{list-style:none;margin:0;padding:.5rem 0;display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:thin}
+nav.tracks a{display:flex;gap:.5rem;align-items:baseline;white-space:nowrap;padding:.45rem .8rem;border-radius:999px;text-decoration:none;color:var(--ink);font-weight:700;font-size:.95rem}
+nav.tracks a .mono{color:var(--muted);font-size:.7rem}
+nav.tracks a:hover{background:var(--surface)}
+nav.tracks a[aria-current="true"]{background:var(--ink);color:var(--bg)}
+nav.tracks a[aria-current="true"] .mono{color:var(--bg);opacity:.75}
+
+section.track{display:none;gap:1.6rem}
+section.track.on{display:grid}
+.track-head{display:grid;gap:.5rem}
+.track-head .mono{color:var(--terra)}
+.lead{max-width:44rem}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(1rem,3vw,1.5rem);display:grid;gap:1rem;min-width:0}
+.panel-title{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem;align-items:baseline}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:1.2rem}
+.btn{border:1.5px solid var(--ink);background:var(--ink);color:var(--bg);border-radius:999px;padding:.55rem 1.1rem;font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.small{padding:.3rem .75rem;font-size:.88rem}
+.btn:hover{filter:brightness(1.12)}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.feedback{font-weight:700;min-height:1.5em}
+.feedback.good{color:var(--ok)} .feedback.bad{color:var(--ko)}
+
+/* Couleurs d'étape — reprennent le schéma du document 1 */
+.s1,.s7{--c:var(--sage);--cs:var(--sage-soft)}
+.s2,.s6{--c:var(--mustard);--cs:var(--mustard-soft)}
+.s3,.s5{--c:var(--terra);--cs:var(--terra-soft)}
+.s4{--c:var(--olive);--cs:var(--olive-soft)}
+
+/* Jeu 1 : ordre */
+.order{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+.order li{display:grid;grid-template-columns:2.2rem 1fr auto;gap:.6rem;align-items:center;padding:.5rem .6rem;border-radius:10px;background:var(--bg);border:1.5px solid var(--line)}
+.order li .pos{font-family:var(--mono);font-size:.85rem;color:var(--muted);text-align:center}
+.order li.good{border-color:var(--ok);background:var(--okbg)}
+.order li.bad{border-color:var(--ko);background:var(--kobg)}
+.order .arrows{display:flex;gap:.3rem}
+.order .arrows button{width:2.1rem;height:2.1rem;border-radius:8px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+
+/* Jeu 2 : qui dit quoi */
+.match{display:grid;gap:.7rem}
+.match .q{display:grid;grid-template-columns:1fr minmax(11rem,15rem);gap:.7rem;align-items:center;padding:.7rem .8rem;border-radius:10px;border:1.5px solid var(--line);background:var(--bg)}
+.match .q p{font-style:italic;min-width:0}
+.match .q.good{border-color:var(--ok);background:var(--okbg)}
+.match .q.bad{border-color:var(--ko);background:var(--kobg)}
+select,input[type=text],textarea{background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:.45rem .6rem;width:100%}
+@media (max-width:600px){.match .q{grid-template-columns:1fr}}
+
+/* Tableau corrigé */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:40rem;font-size:.95rem}
+th,td{text-align:left;padding:.6rem .7rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.step{font-weight:700;white-space:nowrap}
+.dot{display:inline-block;width:.7rem;height:.7rem;border-radius:50%;background:var(--c);margin-right:.45rem}
+
+/* Studio */
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{border:1.5px solid var(--c,var(--line));background:var(--cs,var(--bg));border-radius:999px;padding:.25rem .7rem;font-size:.9rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tabs-mini{display:flex;flex-wrap:wrap;gap:.35rem}
+textarea#lyrics{min-height:22rem;font-family:var(--mono);font-size:.92rem;line-height:1.6;resize:vertical}
+.checklist{list-style:none;margin:0;padding:0;display:grid;gap:.35rem}
+.checklist li{display:flex;gap:.55rem;align-items:flex-start}
+.checklist .box{flex:none;width:1.3rem;height:1.3rem;border-radius:5px;border:2px solid var(--line);display:grid;place-items:center;font-size:.85rem;font-weight:700;margin-top:.15rem}
+.checklist li.done .box{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.meter{height:12px;border-radius:6px;background:var(--bg);border:1px solid var(--line);position:relative;overflow:hidden}
+.meter b{position:absolute;inset:0 auto 0 0;background:var(--sage);border-radius:6px;transition:width .3s}
+.meter .zone{position:absolute;top:0;bottom:0;left:33.3%;width:66.7%;border-left:2px dashed var(--muted)}
+.stats{display:flex;flex-wrap:wrap;gap:1.2rem;font-variant-numeric:tabular-nums}
+.stats div b{font-family:var(--display);font-size:1.6rem;display:block;line-height:1}
+.example{border-left:4px solid var(--terra);padding:.4rem 0 .4rem 1rem;font-family:var(--mono);font-size:.9rem;white-space:pre-line}
+.sticky-side{position:sticky;top:5rem;align-self:start}
+@media (max-width:760px){.sticky-side{position:static}}
+.studio{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:1.2rem}
+@media (max-width:760px){.studio{grid-template-columns:1fr}}
+
+/* Suno */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:.6rem;counter-reset:s}
+.steps li{display:grid;grid-template-columns:2.4rem 1fr;gap:.7rem;align-items:start}
+.steps li::before{counter-increment:s;content:counter(s);font-family:var(--display);font-weight:800;font-size:1.1rem;width:2.4rem;height:2.4rem;border-radius:50%;display:grid;place-items:center;background:var(--mustard-soft);color:var(--ink)}
+.dice{font-family:var(--display);font-size:clamp(1.3rem,3.5vw,1.9rem);font-weight:800;padding:1rem;border-radius:12px;background:var(--bg);border:1.5px dashed var(--line);min-height:4.5rem;display:flex;align-items:center}
+.note{font-size:.92rem;color:var(--muted);border-top:1px solid var(--line);padding-top:.8rem}
+
+/* Pochette */
+.coverbox{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.2rem;align-items:start}
+@media (max-width:760px){.coverbox{grid-template-columns:1fr}}
+.cover{aspect-ratio:1;max-width:100%;width:100%;border-radius:6px;position:relative;overflow:hidden;padding:7%;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 40px -18px rgba(0,0,0,.45)}
+.cover .grp{font-family:var(--mono);font-size:clamp(.7rem,2vw,.9rem);letter-spacing:.14em;text-transform:uppercase}
+.cover .ttl{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,3.4rem);line-height:.92;letter-spacing:-.02em;word-break:break-word}
+.cover .alb{font-family:var(--body);font-weight:700;font-size:clamp(.8rem,2vw,1rem)}
+.cover .slo{font-family:var(--body);font-style:italic;font-size:clamp(.8rem,2vw,1rem)}
+.cover .logo{position:absolute;top:7%;right:7%;width:18%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:clamp(.9rem,3vw,1.4rem)}
+.cover svg{width:46%;height:auto;display:block}
+.cover .bottom{display:flex;justify-content:space-between;align-items:end;gap:1rem}
+.cover .deco{position:absolute;inset:auto -15% -35% auto;width:80%;aspect-ratio:1;border-radius:50%;opacity:.9;z-index:0}
+.cover > *{position:relative;z-index:1}
+.cover .deco{position:absolute;z-index:0}
+.form{display:grid;gap:.75rem}
+.form label{display:grid;gap:.25rem;font-weight:700;font-size:.92rem}
+.swatches{display:flex;gap:.5rem;flex-wrap:wrap}
+.swatches button{width:2.6rem;height:2.6rem;border-radius:50%;border:3px solid var(--line);cursor:pointer}
+.swatches button[aria-pressed="true"]{border-color:var(--ink)}
+
+/* Quiz */
+.qcard{border:1.5px solid var(--line);border-radius:12px;padding:1rem;display:grid;gap:.6rem;background:var(--bg)}
+.qcard .opts{display:grid;gap:.4rem}
+.qcard .opt{display:grid;grid-template-columns:auto 1fr;gap:.5rem;align-items:center}
+.play-q{font-family:var(--display);font-size:clamp(1.25rem,3.4vw,1.7rem);font-weight:800}
+.answers{display:grid;gap:.5rem}
+.answers button{text-align:left;padding:.75rem 1rem;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);cursor:pointer;font-weight:700}
+.answers button.good{background:var(--okbg);border-color:var(--ok)}
+.answers button.bad{background:var(--kobg);border-color:var(--ko)}
+.typetag{display:inline-block;padding:.15rem .6rem;border-radius:999px;background:var(--terra-soft);font-size:.8rem;font-weight:700}
+
+/* Festival */
+.vote{overflow-x:auto}
+.vote table{min-width:36rem}
+.vote td.cell{white-space:nowrap}
+.vote .cnt{display:inline-flex;align-items:center;gap:.25rem}
+.vote .cnt button{width:1.8rem;height:1.8rem;border-radius:6px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:700}
+.vote .cnt b{min-width:1.6rem;text-align:center;font-variant-numeric:tabular-nums}
+.vote td.win{background:var(--mustard-soft)}
+.prize small{display:block;color:var(--muted);font-weight:400}
+
+/* Compétences */
+.comp-ref{display:grid;gap:1.2rem}
+.ref{border-top:3px solid var(--c);padding-top:.8rem;display:grid;gap:.7rem}
+.ref.mcv{--c:var(--terra)} .ref.ma{--c:var(--sage)} .ref.tr{--c:var(--olive)}
+.comp{display:grid;grid-template-columns:5.2rem 1fr;gap:.8rem;padding:.6rem 0;border-bottom:1px dashed var(--line)}
+.comp:last-child{border-bottom:0}
+.comp .code{font-family:var(--mono);font-size:.8rem;color:var(--muted);padding-top:.15rem}
+.comp .where{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.35rem}
+.comp .where span{font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;padding:.12rem .5rem;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+.levels{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.45rem}
+.levels button{font-size:.78rem;padding:.2rem .6rem;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer}
+.levels button[aria-pressed="true"][data-l="0"]{background:var(--kobg);border-color:var(--ko)}
+.levels button[aria-pressed="true"][data-l="1"]{background:var(--mustard-soft);border-color:var(--mustard)}
+.levels button[aria-pressed="true"][data-l="2"]{background:var(--sage-soft);border-color:var(--sage)}
+.levels button[aria-pressed="true"][data-l="3"]{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.matrix th:not(:first-child),.matrix td:not(:first-child){text-align:center}
+.matrix td.y{color:var(--terra);font-weight:800}
+footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <p class="mono muted">Mixtape pédagogique · 2de pro Métiers de la relation client</p>
+      <h1>Le Rap <span>de la Vente</span></h1>
+      <p class="sub">Réviser les 7 étapes de la vente, les transformer en chanson, créer la pochette, faire réviser la classe, puis monter sur scène au Festival du rap commercial.</p>
+    </div>
+    <div class="wave" aria-hidden="true" id="wave"></div>
+  </header>
+
+  <nav class="tracks" aria-label="Activités">
+    <ol id="tracklist">
+      <li><a href="#enquete" data-t="enquete"><span class="mono">01</span>Enquête</a></li>
+      <li><a href="#studio" data-t="studio"><span class="mono">02</span>Studio d'écriture</a></li>
+      <li><a href="#tube" data-t="tube"><span class="mono">03</span>En faire un tube</a></li>
+      <li><a href="#pochette" data-t="pochette"><span class="mono">04</span>Pochette</a></li>
+      <li><a href="#quiz" data-t="quiz"><span class="mono">05</span>Quiz</a></li>
+      <li><a href="#festival" data-t="festival"><span class="mono">06</span>Festival</a></li>
+      <li><a href="#competences" data-t="competences"><span class="mono">REF</span>Compétences</a></li>
+    </ol>
+  </nav>
+
+  <!-- 01 ENQUÊTE -->
+  <section class="track on" id="t-enquete">
+    <div class="track-head">
+      <p class="mono">Piste 01 · Par 2 · 30 min</p>
+      <h2>Enquête : les étapes de la vente</h2>
+      <p class="lead">Avant de devenir artistes, devenez experts. Remettez la tracklist dans l'ordre, puis retrouvez qui dit quoi. Ensuite, complétez le tableau de votre fiche.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-title"><h3>Jeu 1 · Remets la tracklist dans l'ordre</h3></div>
+        <p class="muted">Utilisez les flèches pour placer les 7 étapes dans l'ordre d'une vente.</p>
+        <ol class="order" id="order"></ol>
+        <div class="row">
+          <button class="btn" id="checkOrder">Vérifier l'ordre</button>
+          <button class="btn ghost small" id="shuffleOrder">Mélanger</button>
+        </div>
+        <p class="feedback" id="orderFb" aria-live="polite"></p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title"><h3>Jeu 2 · Qui dit quoi ?</h3></div>
+        <p class="muted">À quelle étape le vendeur prononce-t-il chaque phrase ?</p>
+        <div class="match" id="match"></div>
+        <div class="row"><button class="btn" id="checkMatch">Vérifier</button></div>
+        <p class="feedback" id="matchFb" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">
+        <h3>Corrigé du tableau</h3>
+        <button class="btn ghost small" id="toggleKey" aria-expanded="false">Afficher le corrigé</button>
+      </div>
+      <p class="muted">À montrer après le travail en binôme, pour comparer avec vos fiches.</p>
+      <div class="tablewrap" id="keyTable" hidden>
+        <table>
+          <thead><tr><th>Étape de la vente</th><th>Que fait le vendeur ?</th><th>Exemple de phrase du vendeur</th></tr></thead>
+          <tbody id="keyBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 STUDIO -->
+  <section class="track" id="t-studio">
+    <div class="track-head">
+      <p class="mono">Piste 02 · En groupe · 1 h</p>
+      <h2>Studio d'écriture</h2>
+      <p class="lead">Écrivez une chanson de 1 à 3 minutes : un couplet par étape, un refrain, des rimes, du vocabulaire professionnel, une conclusion et un titre original. Style au choix : rap, slam, hip-hop.</p>
+    </div>
+
+    <div class="studio">
+      <div class="panel">
+        <div class="grid2">
+          <label class="form"><span class="mono muted">Titre de la chanson</span><input type="text" id="songTitle" placeholder="Ex. : Sept pas vers le client"></label>
+          <label class="form"><span class="mono muted">Nom du groupe</span><input type="text" id="bandName" placeholder="Ex. : Les Vendeurs Masqués"></label>
+        </div>
+        <div>
+          <p class="mono muted" style="margin-bottom:.4rem">Insérer une partie</p>
+          <div class="chips" id="partBtns"></div>
+        </div>
+        <label for="lyrics" class="mono muted">Vos paroles</label>
+        <textarea id="lyrics" placeholder="[Couplet 1 – Prise de contact]&#10;Bonjour madame, bienvenue chez nous..."></textarea>
+        <div class="row">
+          <button class="btn" id="copyLyrics">Copier les paroles</button>
+          <button class="btn ghost small" id="loadExample">Voir un exemple de départ</button>
+          <button class="btn ghost small" id="clearLyrics">Effacer</button>
+          <span class="feedback" id="copyFb" aria-live="polite"></span>
+        </div>
+        <p class="note">Le brouillon est gardé sur cet ordinateur tant que vous ne videz pas le navigateur. Copiez-le aussi dans un document par sécurité.</p>
+      </div>
+
+      <div class="sticky-side" style="display:grid;gap:1.2rem">
+        <div class="panel">
+          <h3>Ma chanson contient</h3>
+          <ul class="checklist" id="checklist"></ul>
+          <div class="stats">
+            <div><b id="stWords">0</b><span class="muted">mots</span></div>
+            <div><b id="stTime">0:00</b><span class="muted">durée estimée</span></div>
+            <div><b id="stVocab">0</b><span class="muted">mots pros</span></div>
+          </div>
+          <div>
+            <div class="meter" aria-hidden="true"><div class="zone"></div><b id="meterBar" style="width:0%"></b></div>
+            <p class="muted" style="font-size:.85rem;margin-top:.3rem">Zone pointillée : entre 1 et 3 minutes (débit rap ≈ 150 mots/min).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h3>Banque de mots pros</h3>
+        <p class="muted">Choisissez une étape, puis cliquez sur un mot pour l'insérer dans vos paroles.</p>
+        <div class="tabs-mini" id="vocabTabs"></div>
+        <div class="chips" id="vocabChips"></div>
+      </div>
+      <div class="panel">
+        <h3>Machine à rimes</h3>
+        <p class="muted">Choisissez un son de fin de vers et piochez une rime du monde de la vente.</p>
+        <div class="tabs-mini" id="rhymeTabs"></div>
+        <div class="chips" id="rhymeChips"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Exemple de refrain</h3>
+      <p class="example">Prise de contact, découverte, j'argumente,
+Objection traitée, on négocie, le client s'oriente,
+Conclusion, prise de congé, merci d'être venu,
+Sept étapes dans la poche : la vente est conclue !</p>
+      <p class="muted">Repérez les rimes (argumente / s'oriente, venu / conclue), puis écrivez le vôtre : il doit rester en tête.</p>
+    </div>
+  </section>
+
+  <!-- 03 TUBE -->
+  <section class="track" id="t-tube">
+    <div class="track-head">
+      <p class="mono">Piste 03 · En groupe · 30 min</p>
+      <h2>Transformer votre texte en tube</h2>
+      <p class="lead">Votre texte est prêt ? Passez-le dans un générateur de musique comme Suno.</p>
+    </div>
+    <div class="grid2">
+      <div class="panel">
+        <h3>Les étapes</h3>
+        <ol class="steps">
+          <li><p>Ouvrez <a href="https://suno.com" target="_blank" rel="noopener">suno.com</a> (ou l'outil choisi par votre professeur).</p></li>
+          <li><p>Choisissez un style musical. Pas d'idée ? Lancez le dé à côté.</p></li>
+          <li><p>Collez votre texte dans la zone des paroles (bouton « Copier les paroles » de la piste 02).</p></li>
+          <li><p>Générez votre chanson.</p></li>
+          <li><p>Écoutez le résultat. Le texte est-il compréhensible ? Les 7 étapes s'entendent-elles ? Ajustez si besoin.</p></li>
+        </ol>
+        <p class="note">Utilisez le compte de la classe ou de l'enseignant. Ne saisissez pas vos données personnelles.</p>
+      </div>
+      <div class="panel">
+        <h3>Le dé des styles</h3>
+        <div class="dice" id="dice" aria-live="polite">Rap boom bap old school, 90 BPM</div>
+        <div class="row">
+          <button class="btn" id="rollDice">Lancer le dé</button>
+          <button class="btn ghost small" id="copyStyle">Copier le style</button>
+          <span class="feedback" id="styleFb" aria-live="polite"></span>
+        </div>
+        <p class="muted">Collez ce style dans le champ « Style of Music » de Suno. Vous pouvez le modifier.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 POCHETTE -->
+  <section class="track" id="t-pochette">
+    <div class="track-head">
+      <p class="mono">Piste 04 · En groupe · 45 min</p>
+      <h2>Créer la pochette de votre album</h2>
+      <p class="lead">Testez ici vos idées de nom, de slogan et de couleurs, puis réalisez la version finale sur Canva, PowerPoint ou un autre outil.</p>
+    </div>
+    <div class="coverbox">
+      <div class="panel form">
+        <label>Nom du groupe<input type="text" id="cBand" value="Les Vendeurs Masqués"></label>
+        <label>Titre de la chanson<input type="text" id="cTitle" value="Sept pas vers le client"></label>
+        <label>Nom de l'album<input type="text" id="cAlbum" value="Panier Moyen"></label>
+        <label>Slogan<input type="text" id="cSlogan" value="On t'écoute avant de te vendre."></label>
+        <label>Initiales du logo<input type="text" id="cLogo" value="VM" maxlength="3"></label>
+        <div><p style="font-weight:700;font-size:.92rem;margin-bottom:.35rem">Ambiance</p><div class="swatches" id="swatches"></div></div>
+        <div>
+          <p style="font-weight:700;font-size:.92rem;margin-bottom:.35rem">La pochette finale doit contenir</p>
+          <ul class="checklist" id="coverCheck"></ul>
+        </div>
+      </div>
+      <div style="display:grid;gap:.6rem">
+        <div class="cover" id="cover">
+          <div class="deco" id="cDeco"></div>
+          <div class="logo" id="vLogo">VM</div>
+          <div class="grp" id="vBand">Les Vendeurs Masqués</div>
+          <div>
+            <div class="ttl" id="vTitle">Sept pas vers le client</div>
+            <div class="slo" id="vSlogan" style="margin-top:.6rem">On t'écoute avant de te vendre.</div>
+          </div>
+          <div class="bottom">
+            <div class="alb" id="vAlbum">Album · Panier Moyen</div>
+            <svg id="barcode" viewBox="0 0 120 40" aria-hidden="true"></svg>
+          </div>
+        </div>
+        <p class="muted" style="font-size:.88rem">Le code-barres change avec le titre. Aperçu de brouillon : faites une capture d'écran si vous voulez le garder.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 QUIZ -->
+  <section class="track" id="t-quiz">
+    <div class="track-head">
+      <p class="mono">Piste 05 · En groupe · 30 min</p>
+      <h2>À vous de faire réviser les autres</h2>
+      <p class="lead">Chaque groupe prépare un mini-quiz de 5 questions. Formats possibles : QCM, vrai/faux, classement des étapes, situation professionnelle, devinette, question piège.</p>
+    </div>
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-title"><h3>Créer notre quiz</h3><span class="mono muted" id="qCount">5 questions</span></div>
+        <div id="builder" style="display:grid;gap:.8rem"></div>
+        <div class="row"><button class="btn" id="playMine">Jouer notre quiz</button><button class="btn ghost small" id="playDemo">Jouer le quiz exemple</button></div>
+      </div>
+      <div class="panel" id="player">
+        <div class="panel-title"><h3 id="playTitle">Quiz exemple</h3><span class="mono muted" id="playProg">1 / 5</span></div>
+        <span class="typetag" id="playType">QCM</span>
+        <p class="play-q" id="playQ"></p>
+        <div class="answers" id="playA"></div>
+        <p class="feedback" id="playFb" aria-live="polite"></p>
+        <div class="row"><button class="btn" id="nextQ">Question suivante</button><span class="mono muted" id="playScore">Score : 0</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 FESTIVAL -->
+  <section class="track" id="t-festival">
+    <div class="track-head">
+      <p class="mono">Piste 06 · Toute la classe</p>
+      <h2>Le Festival du rap commercial</h2>
+      <p class="lead">Chaque groupe présente son travail de recherche, sa chanson, sa pochette et son quiz. Puis la classe vote, catégorie par catégorie.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><h3>Les groupes</h3></div>
+      <div class="row">
+        <input type="text" id="newGroup" placeholder="Nom du groupe" style="max-width:18rem">
+        <button class="btn small" id="addGroup">Ajouter</button>
+        <button class="btn ghost small" id="resetVotes">Remettre les votes à zéro</button>
+      </div>
+      <div class="vote">
+        <table>
+          <thead id="voteHead"></thead>
+          <tbody id="voteBody"></tbody>
+        </table>
+      </div>
+      <p class="muted" style="font-size:.9rem">Cliquez sur + pour chaque vote. La case du groupe en tête de chaque catégorie se colore.</p>
+    </div>
+    <div class="panel">
+      <h3>Palmarès</h3>
+      <div id="palmares" class="grid2"></div>
+    </div>
+  </section>
+
+  <!-- COMPÉTENCES -->
+  <section class="track" id="t-competences">
+    <div class="track-head">
+      <p class="mono">Fiche enseignant · Référentiels</p>
+      <h2>Compétences mobilisées</h2>
+      <p class="lead">La seconde famille des métiers de la relation client prépare aux bacs pro Métiers du commerce et de la vente (options A et B) et Métiers de l'accueil. Cette séquence travaille des compétences communes aux trois parcours. Pour chaque compétence, vous pouvez positionner un élève ou un groupe.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Matrice activités × blocs</h3>
+      <div class="tablewrap">
+        <table class="matrix" id="matrix"></table>
+      </div>
+    </div>
+
+    <div class="panel comp-ref" id="compRef"></div>
+
+    <div class="row">
+      <button class="btn ghost small" id="resetLevels">Effacer les positionnements</button>
+    </div>
+  </section>
+
+  <footer>Séquence « Le Rap de la Vente » · 2de pro famille des métiers de la relation client · Document 1 : les 7 étapes de la vente.</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+const store={get(k,d){try{const v=localStorage.getItem("rdv_"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("rdv_"+k,JSON.stringify(v))}catch(e){}}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+const STEPS=[
+ {n:"Prise de contact",act:"Salue, sourit, regarde le client, se rend disponible et le met à l'aise (règle des 4 × 20).",ph:"Bonjour madame, bienvenue ! Prenez votre temps, je suis là si vous avez besoin."},
+ {n:"Découverte des besoins",act:"Pose des questions ouvertes, écoute activement, reformule pour cerner les besoins et les motivations (SONCAS).",ph:"Pour quelle utilisation recherchez-vous ce produit ?"},
+ {n:"Argumentation commerciale",act:"Présente le produit adapté et argumente avec la méthode CAP : caractéristique, avantage, preuve.",ph:"Ce téléphone tient deux jours sans recharge : vous ne serez plus jamais à plat au travail."},
+ {n:"Traitement des objections",act:"Écoute le frein du client, le reformule, puis y répond calmement (méthode « oui, mais… »).",ph:"Je comprends que le prix vous fasse hésiter, mais il est garanti trois ans."},
+ {n:"Négociation commerciale",act:"Cherche un accord gagnant-gagnant sur les conditions (prix, livraison, paiement) sans brader le produit.",ph:"Si vous le prenez aujourd'hui, je peux vous offrir la livraison."},
+ {n:"Conclusion de la vente",act:"Repère les signaux d'achat, propose de conclure, fait une vente additionnelle et encaisse.",ph:"Je vous l'emballe ? Et avec ça, une housse de protection ?"},
+ {n:"Prise de congé",act:"Remercie, félicite le client pour son choix, propose la carte de fidélité et le raccompagne.",ph:"Merci, très bon choix ! Voici votre carte de fidélité, à bientôt !"}
+];
+const sc=i=>"s"+(i+1);
+
+/* ---------- vague d'en-tête ---------- */
+(function(){const cls=[0,1,2,3,4,5,6,6,5,4,3,2,1,0];$("#wave").innerHTML=cls.map((c,i)=>`<i class="${sc(c)}" style="--h:${30+Math.round(70*Math.abs(Math.sin(i*.9+1)))}%;--d:${(i*.09).toFixed(2)}s"></i>`).join("")})();
+
+/* ---------- navigation ---------- */
+const tabs=["enquete","studio","tube","pochette","quiz","festival","competences"];
+function show(t){if(!tabs.includes(t))t="enquete";document.querySelectorAll("section.track").forEach(s=>s.classList.toggle("on",s.id==="t-"+t));document.querySelectorAll("#tracklist a").forEach(a=>a.setAttribute("aria-current",a.dataset.t===t?"true":"false"));store.set("tab",t)}
+document.querySelectorAll("#tracklist a").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();show(a.dataset.t);try{history.replaceState(null,"","#"+a.dataset.t)}catch(_){}window.scrollTo({top:0,behavior:"smooth"})}));
+show((location.hash||"").slice(1)||store.get("tab","enquete"));
+
+/* ---------- Jeu 1 : ordre ---------- */
+let order=shuffle([0,1,2,3,4,5,6]);
+function renderOrder(marks){$("#order").innerHTML=order.map((s,i)=>`<li class="${sc(s)} ${marks?(marks[i]?"good":"bad"):""}"><span class="pos">${i+1}</span><span><span class="dot"></span>${esc(STEPS[s].n)}</span><span class="arrows"><button aria-label="Monter ${esc(STEPS[s].n)}" data-i="${i}" data-d="-1">▲</button><button aria-label="Descendre ${esc(STEPS[s].n)}" data-i="${i}" data-d="1">▼</button></span></li>`).join("")}
+$("#order").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const i=+b.dataset.i,j=i+ +b.dataset.d;if(j<0||j>6)return;[order[i],order[j]]=[order[j],order[i]];renderOrder();$("#orderFb").textContent="";const nb=$("#order").querySelectorAll("button")[j*2+(+b.dataset.d>0?1:0)];if(nb)nb.focus()});
+$("#checkOrder").onclick=()=>{const m=order.map((s,i)=>s===i);renderOrder(m);const n=m.filter(Boolean).length;const fb=$("#orderFb");fb.className="feedback "+(n===7?"good":"bad");fb.textContent=n===7?"Parfait : la tracklist est dans l'ordre !":`${n} / 7 étapes bien placées. Regardez les cases rouges et réessayez.`};
+$("#shuffleOrder").onclick=()=>{order=shuffle(order);renderOrder();$("#orderFb").textContent=""};
+renderOrder();
+
+/* ---------- Jeu 2 : qui dit quoi ---------- */
+const mOrder=shuffle([0,1,2,3,4,5,6]);
+$("#match").innerHTML=mOrder.map(s=>`<div class="q" data-s="${s}"><p>« ${esc(STEPS[s].ph)} »</p><select id="m${s}" aria-label="Étape pour cette phrase"><option value="">Choisir l'étape…</option>${STEPS.map((x,i)=>`<option value="${i}">${i+1}. ${esc(x.n)}</option>`).join("")}</select></div>`).join("");
+$("#checkMatch").onclick=()=>{let n=0;document.querySelectorAll("#match .q").forEach(q=>{const ok=$("#m"+q.dataset.s).value===q.dataset.s;q.classList.toggle("good",ok);q.classList.toggle("bad",!ok);if(ok)n++});const fb=$("#matchFb");fb.className="feedback "+(n===7?"good":"bad");fb.textContent=n===7?"7 / 7 : vous savez qui dit quoi !":`${n} / 7 bonnes réponses.`};
+
+/* ---------- corrigé ---------- */
+$("#keyBody").innerHTML=STEPS.map((s,i)=>`<tr class="${sc(i)}"><td class="step"><span class="dot"></span>${i+1}. ${esc(s.n)}</td><td>${esc(s.act)}</td><td><i>« ${esc(s.ph)} »</i></td></tr>`).join("");
+$("#toggleKey").onclick=e=>{const t=$("#keyTable");t.hidden=!t.hidden;e.target.textContent=t.hidden?"Afficher le corrigé":"Masquer le corrigé";e.target.setAttribute("aria-expanded",String(!t.hidden))};
+
+/* ---------- Studio ---------- */
+const VOCAB=[
+ ["bonjour","bienvenue","sourire","regard","accueil","règle des 4 × 20","disponible","mettre à l'aise"],
+ ["besoin","question ouverte","écoute active","reformulation","motivation","SONCAS","budget","usage"],
+ ["argument","caractéristique","avantage","preuve","méthode CAP","bénéfice client","démonstration","qualité"],
+ ["objection","frein","reformuler","rassurer","« oui, mais »","garantie","doute","comprendre"],
+ ["négociation","compromis","remise","conditions","livraison offerte","marge","gagnant-gagnant","paiement en 3 fois"],
+ ["signaux d'achat","conclure","vente additionnelle","encaissement","ticket de caisse","panier moyen","caisse","bon de commande"],
+ ["merci","fidélité","carte de fidélité","satisfaction","au revoir","à bientôt","service après-vente","raccompagner"]
+];
+const ALLVOCAB=[...new Set(VOCAB.flat().map(w=>w.toLowerCase().replace(/[«»]/g,"").trim()))];
+const RHYMES={
+ "-tion / -sion":["négociation","argumentation","conclusion","satisfaction","attention","objection","solution","question","promotion","relation","fidélisation","décision","précision","réclamation"],
+ "-ant / -ent":["client","argument","rassurant","important","vraiment","maintenant","accueillant","gagnant","convaincant","paiement","seulement","sourire en avant"],
+ "-é":["qualité","fidélité","rapidité","efficacité","conseillé","adapté","proposé","écouté","rassuré","gagné","acheté","validé"],
+ "-eur":["vendeur","valeur","meilleur","acheteur","bonheur","couleur","rigueur","conseiller d'honneur","cœur","sans erreur"],
+ "-i":["prix","merci","ici","garanti","compris","choisi","aussi","service compris","c'est parti","ami"],
+ "-oin":["besoin","soin","loin","témoin","coin","moins","point","j'en prends soin"]
+};
+let vTab=0,rTab=Object.keys(RHYMES)[0];
+const lyr=$("#lyrics");
+function insert(txt){const s=lyr.selectionStart??lyr.value.length,e=lyr.selectionEnd??s;lyr.value=lyr.value.slice(0,s)+txt+lyr.value.slice(e);lyr.focus();lyr.selectionStart=lyr.selectionEnd=s+txt.length;onLyrics()}
+function renderVocab(){$("#vocabTabs").innerHTML=STEPS.map((s,i)=>`<button class="chip ${sc(i)}" aria-pressed="${i===vTab}" data-i="${i}">${i+1}. ${esc(s.n)}</button>`).join("");$("#vocabChips").innerHTML=VOCAB[vTab].map(w=>`<button class="chip" data-w="${esc(w)}">${esc(w)}</button>`).join("")}
+$("#vocabTabs").onclick=e=>{const b=e.target.closest("button");if(b){vTab=+b.dataset.i;renderVocab()}};
+$("#vocabChips").onclick=e=>{const b=e.target.closest("button");if(b)insert(b.dataset.w+" ")};
+function renderRhymes(){$("#rhymeTabs").innerHTML=Object.keys(RHYMES).map(k=>`<button class="chip" aria-pressed="${k===rTab}" data-k="${esc(k)}">${esc(k)}</button>`).join("");$("#rhymeChips").innerHTML=RHYMES[rTab].map(w=>`<button class="chip s4" data-w="${esc(w)}">${esc(w)}</button>`).join("")}
+$("#rhymeTabs").onclick=e=>{const b=e.target.closest("button");if(b){rTab=b.dataset.k;renderRhymes()}};
+$("#rhymeChips").onclick=e=>{const b=e.target.closest("button");if(b)insert(b.dataset.w+" ")};
+renderVocab();renderRhymes();
+
+const PARTS=[...STEPS.map((s,i)=>({l:`Couplet ${i+1}`,t:`[Couplet ${i+1} – ${s.n}]`,c:sc(i)})),{l:"Refrain",t:"[Refrain]",c:""},{l:"Conclusion",t:"[Conclusion]",c:""}];
+$("#partBtns").innerHTML=PARTS.map((p,i)=>`<button class="chip ${p.c}" data-i="${i}">${esc(p.l)}</button>`).join("");
+$("#partBtns").onclick=e=>{const b=e.target.closest("button");if(!b)return;const p=PARTS[+b.dataset.i];const pre=lyr.value&&!lyr.value.endsWith("\n\n")?(lyr.value.endsWith("\n")?"\n":"\n\n"):"";lyr.selectionStart=lyr.selectionEnd=lyr.value.length;insert(pre+p.t+"\n")};
+
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+const STEPKEYS=[["prise de contact","bonjour","bienvenue","accueil"],["decouverte","besoin"],["argument"],["objection"],["negoci"],["conclu"],["prise de conge","au revoir","a bientot","merci"]];
+function analyse(){
+  const raw=lyr.value,t=norm(raw);
+  const words=(raw.match(/[A-Za-zÀ-ÿ0-9'’-]+/g)||[]).length;
+  const steps=STEPKEYS.map(ks=>ks.some(k=>t.includes(k)));
+  const nSteps=steps.filter(Boolean).length;
+  const vocab=ALLVOCAB.filter(w=>t.includes(norm(w))).length;
+  const lines=raw.split("\n").map(l=>l.trim()).filter(l=>l&&!l.startsWith("["));
+  const end=l=>{const w=norm(l).replace(/[^a-z ]/g,"").trim();return w.slice(-2)};
+  let rhymes=0;for(let i=0;i<lines.length-1;i++){if(end(lines[i]).length===2&&end(lines[i])===end(lines[i+1]))rhymes++}
+  const title=$("#songTitle").value.trim().length>2;
+  return {words,nSteps,vocab,rhymes,title,refrain:/\[refrain\]/i.test(raw),concl:/\[conclusion\]/i.test(raw),couplets:(raw.match(/\[couplet/gi)||[]).length};
+}
+function onLyrics(){
+  const a=analyse();
+  const items=[
+    [a.nSteps===7,`Toutes les étapes de la vente (${a.nSteps} / 7 repérées)`],
+    [a.couplets>=7,`Un couplet par étape (${a.couplets} / 7 couplets)`],
+    [a.refrain,"Un refrain (balise [Refrain])"],
+    [a.rhymes>=4,`Des rimes (${a.rhymes} paires de vers qui riment)`],
+    [a.vocab>=8,`Du vocabulaire professionnel (${a.vocab} / 8 mots minimum)`],
+    [a.concl,"Une conclusion (balise [Conclusion])"],
+    [a.title,"Un titre original"]
+  ];
+  $("#checklist").innerHTML=items.map(([ok,l])=>`<li class="${ok?"done":""}"><span class="box">${ok?"✓":""}</span><span>${esc(l)}</span></li>`).join("")+`<li><span class="box"></span><span class="muted">Une explication de chaque étape : à vérifier en relisant ensemble.</span></li>`;
+  const sec=Math.round(a.words/150*60);
+  $("#stWords").textContent=a.words;$("#stTime").textContent=Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0");$("#stVocab").textContent=a.vocab;
+  $("#meterBar").style.width=Math.min(100,sec/180*100)+"%";
+  store.set("lyrics",lyr.value);store.set("title",$("#songTitle").value);store.set("band",$("#bandName").value);
+}
+lyr.value=store.get("lyrics","");$("#songTitle").value=store.get("title","");$("#bandName").value=store.get("band","");
+lyr.addEventListener("input",onLyrics);$("#songTitle").addEventListener("input",onLyrics);$("#bandName").addEventListener("input",onLyrics);
+onLyrics();
+$("#loadExample").onclick=()=>{if(lyr.value.trim()&&!$("#loadExample").dataset.sure){$("#loadExample").dataset.sure="1";$("#loadExample").textContent="Cliquez encore pour remplacer vos paroles";return}
+  delete $("#loadExample").dataset.sure;$("#loadExample").textContent="Voir un exemple de départ";
+  lyr.value=`[Couplet 1 – Prise de contact]
+Bonjour madame, bienvenue, un sourire pour commencer,
+Un regard, je suis dispo, venez donc vous installer.
+
+[Refrain]
+Prise de contact, découverte, j'argumente,
+Objection traitée, on négocie, le client s'oriente,
+Conclusion, prise de congé, merci d'être venu,
+Sept étapes dans la poche : la vente est conclue !
+
+[Couplet 2 – Découverte des besoins]
+(à vous d'écrire…)`;onLyrics()};
+$("#clearLyrics").onclick=e=>{const b=e.target;if(!b.dataset.sure){b.dataset.sure="1";b.textContent="Confirmer l'effacement";setTimeout(()=>{delete b.dataset.sure;b.textContent="Effacer"},4000);return}delete b.dataset.sure;b.textContent="Effacer";lyr.value="";onLyrics()};
+function copy(text,fbSel){const fb=$(fbSel);const done=()=>{fb.className="feedback good";fb.textContent="Copié !";setTimeout(()=>fb.textContent="",2500)};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(()=>{fallback()})}else fallback();
+  function fallback(){fb.className="feedback bad";fb.textContent="Copie bloquée : sélectionnez le texte puis Ctrl + C."}}
+$("#copyLyrics").onclick=()=>{const t=$("#songTitle").value.trim();copy((t?t+"\n\n":"")+lyr.value,"#copyFb");if(!navigator.clipboard){lyr.select()}};
+
+/* ---------- Dé des styles ---------- */
+const STYLES=["Rap boom bap old school, 90 BPM","Trap énergique, basses lourdes, 140 BPM","Slam doux sur piano, voix posée","Hip-hop jazzy lo-fi, saxophone","Afro-pop dansant, percussions","Rap zouk ensoleillé","Rap festif façon générique TV, cuivres","Hip-hop années 2000, scratchs DJ","Drill sombre, voix rapide","Rap chorale de supermarché, chœurs et claps"];
+$("#rollDice").onclick=()=>{const d=$("#dice");let n=0;const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;const go=()=>{d.textContent=STYLES[Math.floor(Math.random()*STYLES.length)];if(!reduce&&++n<8)setTimeout(go,70)};go()};
+$("#copyStyle").onclick=()=>copy($("#dice").textContent,"#styleFb");
+
+/* ---------- Pochette ---------- */
+const THEMES=[
+ {n:"Terracotta",bg:"#B4543F",fg:"#FBF4E8",deco:"#E3B23C",logoBg:"#FBF4E8",logoFg:"#B4543F"},
+ {n:"Sauge",bg:"#5E8C70",fg:"#F6F8EE",deco:"#2C4A38",logoBg:"#E9C85A",logoFg:"#22301F"},
+ {n:"Moutarde",bg:"#E3B23C",fg:"#22261C",deco:"#B4543F",logoBg:"#22261C",logoFg:"#E3B23C"},
+ {n:"Nuit",bg:"#1B1F17",fg:"#EFF2E6",deco:"#74822A",logoBg:"#B4543F",logoFg:"#FBF4E8"},
+ {n:"Ticket de caisse",bg:"#F4F4EF",fg:"#1B1F17",deco:"#D9DBD0",logoBg:"#1B1F17",logoFg:"#F4F4EF"}
+];
+let theme=store.get("theme",0);
+$("#swatches").innerHTML=THEMES.map((t,i)=>`<button aria-label="${t.n}" title="${t.n}" data-i="${i}" style="background:linear-gradient(135deg,${t.bg} 55%,${t.deco} 55%)"></button>`).join("");
+$("#swatches").onclick=e=>{const b=e.target.closest("button");if(b){theme=+b.dataset.i;store.set("theme",theme);renderCover()}};
+["cBand","cTitle","cAlbum","cSlogan","cLogo"].forEach(id=>{const v=store.get(id,null);if(v!=null)$("#"+id).value=v;$("#"+id).addEventListener("input",()=>{store.set(id,$("#"+id).value);renderCover()})});
+function barcode(str,fg){let h=0;for(const c of str)h=(h*31+c.charCodeAt(0))>>>0;let x=0,out="";while(x<116){h=(h*1103515245+12345)>>>0;const w=1+(h%3);if((h>>4)%3)out+=`<rect x="${x}" y="0" width="${w}" height="30" fill="${fg}"/>`;x+=w+1}
+  const digits=String(3000000000000+(h%999999999999)).slice(0,13);return out+`<text x="60" y="39" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="${fg}">${digits}</text>`}
+function renderCover(){const t=THEMES[theme];const c=$("#cover");c.style.background=t.bg;c.style.color=t.fg;$("#cDeco").style.background=t.deco;
+  const v=id=>$("#"+id).value.trim();
+  $("#vBand").textContent=v("cBand")||"Nom du groupe";$("#vTitle").textContent=v("cTitle")||"Titre";$("#vAlbum").textContent="Album · "+(v("cAlbum")||"…");$("#vSlogan").textContent=v("cSlogan")||"Votre slogan";
+  const lg=$("#vLogo");lg.textContent=v("cLogo")||"?";lg.style.background=t.logoBg;lg.style.color=t.logoFg;
+  $("#barcode").innerHTML=barcode(v("cTitle")||"x",t.fg);
+  document.querySelectorAll("#swatches button").forEach((b,i)=>b.setAttribute("aria-pressed",String(i===theme)));
+  const items=[[!!v("cBand"),"Le nom du groupe"],[!!v("cTitle"),"Le titre de la chanson"],[!!v("cAlbum"),"Le nom de l'album"],[!!v("cLogo"),"Votre logo"],[!!v("cSlogan"),"Un slogan"],[false,"Un visuel en lien avec la vente (à faire sur Canva)"],[false,"Une création originale et soignée"]];
+  $("#coverCheck").innerHTML=items.map(([ok,l])=>`<li class="${ok?"done":""}"><span class="box">${ok?"✓":""}</span><span>${esc(l)}</span></li>`).join("")}
+renderCover();
+
+/* ---------- Quiz ---------- */
+const TYPES=["QCM","Vrai / faux","Classement des étapes","Situation professionnelle","Devinette","Question piège"];
+const DEMO=[
+ {type:"QCM",q:"Quelle est la première étape de la vente ?",o:["La découverte des besoins","La prise de contact","L'argumentation"],a:1},
+ {type:"Vrai / faux",q:"Pendant la découverte des besoins, le vendeur parle plus que le client.",o:["Vrai","Faux"],a:1},
+ {type:"Situation professionnelle",q:"La cliente dit : « C'est trop cher pour moi. » Vous êtes à quelle étape ?",o:["Traitement des objections","Prise de congé","Conclusion de la vente"],a:0},
+ {type:"Devinette",q:"Je suis C, A, P : caractéristique, avantage et… ?",o:["Prix","Preuve","Promotion"],a:1},
+ {type:"Question piège",q:"Proposer une housse avec le téléphone, c'est…",o:["De la négociation","Une vente additionnelle","Une objection"],a:1}
+];
+let mine=store.get("quiz",null)||Array.from({length:5},()=>({type:"QCM",q:"",o:["","",""],a:0}));
+function renderBuilder(){$("#builder").innerHTML=mine.map((x,i)=>`<div class="qcard" data-i="${i}">
+  <div class="row" style="justify-content:space-between"><b>Question ${i+1}</b>
+  <select data-f="type" id="qt${i}" aria-label="Type de la question ${i+1}" style="width:auto">${TYPES.map(t=>`<option ${t===x.type?"selected":""}>${t}</option>`).join("")}</select></div>
+  <input type="text" data-f="q" id="qq${i}" value="${esc(x.q)}" placeholder="Écrivez la question" aria-label="Énoncé de la question ${i+1}">
+  <div class="opts">${x.o.map((o,j)=>`<label class="opt"><input type="radio" name="ra${i}" data-f="a" value="${j}" ${x.a===j?"checked":""} aria-label="Bonne réponse ${j+1}"><input type="text" data-f="o" data-j="${j}" id="qo${i}_${j}" value="${esc(o)}" placeholder="Réponse ${j+1}${j===0?" (cochez la bonne)":""}"></label>`).join("")}</div>
+ </div>`).join("")}
+$("#builder").addEventListener("input",e=>{const card=e.target.closest(".qcard");if(!card)return;const x=mine[+card.dataset.i],f=e.target.dataset.f;
+  if(f==="q")x.q=e.target.value;else if(f==="o")x.o[+e.target.dataset.j]=e.target.value;else if(f==="a")x.a=+e.target.value;
+  else if(f==="type"){x.type=e.target.value;if(x.type==="Vrai / faux"){x.o=["Vrai","Faux"];if(x.a>1)x.a=0}else if(x.o.length<3){x.o=[...x.o,""]}renderBuilder()}
+  store.set("quiz",mine)});
+$("#builder").addEventListener("change",e=>{if(e.target.dataset.f==="a"){const card=e.target.closest(".qcard");mine[+card.dataset.i].a=+e.target.value;store.set("quiz",mine)}});
+renderBuilder();
+let play={set:DEMO,i:0,score:0,answered:false,title:"Quiz exemple"};
+function renderPlay(){const x=play.set[play.i];$("#playTitle").textContent=play.title;$("#playProg").textContent=`${play.i+1} / ${play.set.length}`;$("#playType").textContent=x.type;$("#playQ").textContent=x.q||"(question vide)";
+  $("#playA").innerHTML=x.o.map((o,j)=>`<button data-j="${j}">${esc(o||"…")}</button>`).join("");$("#playFb").textContent="";$("#playScore").textContent=`Score : ${play.score}`;play.answered=false;$("#nextQ").textContent=play.i<play.set.length-1?"Question suivante":"Recommencer"}
+$("#playA").onclick=e=>{const b=e.target.closest("button");if(!b||play.answered)return;play.answered=true;const x=play.set[play.i],j=+b.dataset.j;
+  const btns=$("#playA").querySelectorAll("button");btns[x.a].classList.add("good");const fb=$("#playFb");
+  if(j===x.a){play.score++;fb.className="feedback good";fb.textContent="Bonne réponse !"}else{b.classList.add("bad");fb.className="feedback bad";fb.textContent="Raté ! La bonne réponse est en vert."}
+  $("#playScore").textContent=`Score : ${play.score}`};
+$("#nextQ").onclick=()=>{if(play.i<play.set.length-1)play.i++;else{play.i=0;play.score=0}renderPlay()};
+$("#playDemo").onclick=()=>{play={set:DEMO,i:0,score:0,answered:false,title:"Quiz exemple"};renderPlay();$("#player").scrollIntoView({behavior:"smooth",block:"nearest"})};
+$("#playMine").onclick=()=>{const set=mine.filter(x=>x.q.trim());if(!set.length){$("#playFb").className="feedback bad";$("#playFb").textContent="Écrivez au moins une question pour jouer votre quiz.";return}play={set:set.map(x=>({...x,o:x.o.slice()})),i:0,score:0,answered:false,title:"Notre quiz"};renderPlay();$("#player").scrollIntoView({behavior:"smooth",block:"nearest"})};
+renderPlay();
+
+/* ---------- Festival ---------- */
+const PRIZES=[["Meilleure chanson","Le tube commercial"],["Meilleur refrain","Le refrain qui reste en tête"],["Meilleure pochette","Le prix du graphiste"],["Chanson la plus drôle","Le prix de l'humour"],["Meilleure chanson pédagogique","Le prix du professeur"],["Plus grande créativité","Le prix de l'originalité"],["Meilleur vocabulaire commercial","Le prix du vendeur"]];
+let groups=store.get("groups",["Groupe 1","Groupe 2","Groupe 3","Groupe 4","Groupe 5","Groupe 6"]);
+let votes=store.get("votes",{});
+const vk=(p,g)=>p+"|"+g;
+function renderVote(){
+  $("#voteHead").innerHTML=`<tr><th>Catégorie</th>${groups.map((g,i)=>`<th>${esc(g)} <button class="btn ghost small" data-del="${i}" aria-label="Retirer ${esc(g)}" style="padding:0 .45rem;margin-left:.2rem">×</button></th>`).join("")}</tr>`;
+  $("#voteBody").innerHTML=PRIZES.map((p,pi)=>{const vals=groups.map(g=>votes[vk(pi,g)]||0);const max=Math.max(0,...vals);
+    return `<tr><td class="prize"><b>${esc(p[1])}</b><small>${esc(p[0])}</small></td>${groups.map((g,gi)=>`<td class="cell ${max>0&&vals[gi]===max?"win":""}"><span class="cnt"><button data-p="${pi}" data-g="${gi}" data-d="-1" aria-label="Retirer un vote">−</button><b>${vals[gi]}</b><button data-p="${pi}" data-g="${gi}" data-d="1" aria-label="Ajouter un vote">+</button></span></td>`).join("")}</tr>`}).join("");
+  $("#palmares").innerHTML=PRIZES.map((p,pi)=>{const vals=groups.map(g=>votes[vk(pi,g)]||0);const max=Math.max(0,...vals);const w=max>0?groups.filter((g,i)=>vals[i]===max):[];
+    return `<div class="ref tr" style="--c:var(--mustard)"><span class="mono muted">${esc(p[0])}</span><h3>${esc(p[1])}</h3><p>${w.length?esc(w.join(" & "))+` <span class="muted">(${max} vote${max>1?"s":""})</span>`:'<span class="muted">En attente des votes</span>'}</p></div>`}).join("");
+  store.set("groups",groups);store.set("votes",votes)}
+$("#voteBody").onclick=e=>{const b=e.target.closest("button");if(!b)return;const k=vk(+b.dataset.p,groups[+b.dataset.g]);votes[k]=Math.max(0,(votes[k]||0)+ +b.dataset.d);renderVote()};
+$("#voteHead").onclick=e=>{const b=e.target.closest("button[data-del]");if(!b)return;groups.splice(+b.dataset.del,1);renderVote()};
+$("#addGroup").onclick=()=>{const v=$("#newGroup").value.trim();if(v&&!groups.includes(v)){groups.push(v);$("#newGroup").value="";renderVote()}};
+$("#newGroup").addEventListener("keydown",e=>{if(e.key==="Enter")$("#addGroup").click()});
+$("#resetVotes").onclick=e=>{const b=e.target;if(!b.dataset.sure){b.dataset.sure="1";b.textContent="Confirmer la remise à zéro";setTimeout(()=>{delete b.dataset.sure;b.textContent="Remettre les votes à zéro"},4000);return}delete b.dataset.sure;b.textContent="Remettre les votes à zéro";votes={};renderVote()};
+renderVote();
+
+/* ---------- Compétences ---------- */
+const ACTS=["01 Enquête","02 Studio","03 Tube","04 Pochette","05 Quiz","06 Festival"];
+const REF=[
+ {cls:"mcv",title:"Bac pro Métiers du commerce et de la vente · options A et B",items:[
+  {code:"Bloc 1",t:"Conseiller et vendre",d:"Connaître et enchaîner les étapes de la vente : accueil, découverte des besoins, argumentation, traitement des objections, conclusion, prise de congé. Cœur de toute la séquence.",w:[0,1,4,5]},
+  {code:"C1.1",t:"Assurer la veille commerciale",d:"Rechercher, sélectionner et exploiter une information commerciale (document 1, recherches en binôme).",w:[0]},
+  {code:"C1.2",t:"Réaliser la vente dans un cadre omnicanal",d:"Mobiliser les techniques de vente et le vocabulaire professionnel dans les couplets et dans les situations du quiz.",w:[0,1,4]},
+  {code:"C1.3",t:"Assurer l'exécution de la vente",d:"Conclusion, vente additionnelle, encaissement : couplet 6 et questions du quiz.",w:[1,4]},
+  {code:"Bloc 3",t:"Fidéliser la clientèle et développer la relation client",d:"Prise de congé, carte de fidélité, satisfaction client : couplet 7 et conclusion de la chanson.",w:[0,1]},
+  {code:"Bloc 4A",t:"Animer et gérer l'espace commercial",d:"Rendre une offre attractive et lisible : visuel, slogan et mise en valeur de la pochette, comme pour une vitrine ou une PLV.",w:[3]},
+  {code:"Bloc 4B",t:"Prospecter et valoriser l'offre commerciale",d:"Valoriser les produits et/ou services : trouver une accroche, un slogan, convaincre un public lors de la présentation au festival.",w:[3,5]}
+ ]},
+ {cls:"ma",title:"Bac pro Métiers de l'accueil",items:[
+  {code:"Bloc 1",t:"Gérer l'accueil multicanal à des fins d'information, d'orientation et de conseil",d:"1.2 Prendre contact avec le public, 1.3 Identifier la demande, 1.4 Traiter la demande : prise de contact, découverte des besoins, réponse adaptée.",w:[0,1,4]},
+  {code:"Bloc 2",t:"Gérer l'information et des prestations à des fins organisationnelles",d:"2.1 Gérer l'information : rechercher, trier et restituer les étapes dans le tableau ; organiser le travail de groupe.",w:[0,2]},
+  {code:"Bloc 3",t:"Gérer la relation commerciale",d:"3.1 Contribuer au développement de la relation commerciale, 3.2 Satisfaire et fidéliser le public, 3.3 Gérer les réclamations (lien avec le traitement des objections).",w:[0,1,4]}
+ ]},
+ {cls:"tr",title:"Compétences transversales et enseignements généraux",items:[
+  {code:"Français",t:"Écrire et dire un texte",d:"Produire un texte structuré (couplets, refrain), travailler les rimes et le lexique, s'exprimer à l'oral devant la classe.",w:[1,5]},
+  {code:"Numérique",t:"Utiliser des outils numériques de création",d:"Générateur de musique, Canva ou PowerPoint ; usage responsable de l'IA et des données personnelles.",w:[2,3]},
+  {code:"Savoir-être",t:"Travailler en équipe et communiquer",d:"Coopérer, se répartir les tâches, présenter, écouter et évaluer le travail des autres avec bienveillance.",w:[0,1,2,3,4,5]}
+ ]}
+];
+let levels=store.get("levels",{});
+const LV=["Non acquis","En cours","Acquis","Maîtrisé"];
+$("#compRef").innerHTML=REF.map((r,ri)=>`<div class="ref ${r.cls}"><h3>${esc(r.title)}</h3>${r.items.map((c,ci)=>{const k=ri+"_"+ci;return `<div class="comp"><span class="code">${esc(c.code)}</span><div><b>${esc(c.t)}</b><p class="muted" style="font-size:.95rem">${esc(c.d)}</p><div class="where">${c.w.map(i=>`<span>${esc(ACTS[i])}</span>`).join("")}</div><div class="levels" data-k="${k}">${LV.map((l,li)=>`<button data-l="${li}" aria-pressed="${levels[k]===li}">${l}</button>`).join("")}</div></div></div>`}).join("")}</div>`).join("");
+$("#compRef").onclick=e=>{const b=e.target.closest(".levels button");if(!b)return;const box=b.parentElement,k=box.dataset.k,l=+b.dataset.l;levels[k]=levels[k]===l?undefined:l;box.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(levels[k]===+x.dataset.l)));store.set("levels",levels)};
+$("#resetLevels").onclick=e=>{const b=e.target;if(!b.dataset.sure){b.dataset.sure="1";b.textContent="Confirmer l'effacement";setTimeout(()=>{delete b.dataset.sure;b.textContent="Effacer les positionnements"},4000);return}delete b.dataset.sure;b.textContent="Effacer les positionnements";levels={};store.set("levels",levels);document.querySelectorAll(".levels button").forEach(x=>x.setAttribute("aria-pressed","false"))};
+const MROWS=[["MCV · Bloc 1 Conseiller et vendre",[0,1,4,5]],["MCV · Bloc 3 Fidéliser",[0,1]],["MCV · Bloc 4A Espace commercial",[3]],["MCV · Bloc 4B Valoriser l'offre",[3,5]],["Accueil · Bloc 1 Accueil multicanal",[0,1,4]],["Accueil · Bloc 2 Information",[0,2]],["Accueil · Bloc 3 Relation commerciale",[0,1,4]],["Français / numérique / équipe",[1,2,3,5]]];
+$("#matrix").innerHTML=`<thead><tr><th>Bloc</th>${ACTS.map(a=>`<th>${esc(a)}</th>`).join("")}</tr></thead><tbody>${MROWS.map(([n,w])=>`<tr><td>${esc(n)}</td>${ACTS.map((a,i)=>w.includes(i)?'<td class="y" aria-label="oui">●</td>':'<td class="muted">·</td>').join("")}</tr>`).join("")}</tbody>`;
+})();
+</script>
+</body>
+</html>
