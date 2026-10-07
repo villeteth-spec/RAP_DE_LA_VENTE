@@ -411,8 +411,6 @@ Sept étapes dans la poche : la vente est conclue !</p>
         <div class="cover" id="cover">
           <div class="deco" id="cDeco"></div>
           <img id="vImg" class="cimg" alt="Image de la pochette importée par le groupe" hidden>
-          <div class="cshade" id="vShade" hidden></div>
-          <div class="dropzone" id="dropzone" hidden>Déposez votre image ici</div>
           <div class="logo" id="vLogo">VM</div>
           <div class="grp" id="vBand">Les Vendeurs Masqués</div>
           <div>
@@ -668,7 +666,7 @@ function renderCover(){const t=THEMES[theme];const c=$("#cover");c.style.backgro
   const img=$("#vImg"),mode=$("#modeBg").checked?"bg":"full";
   img.hidden=!coverImg;if(coverImg&&img.getAttribute("src")!==coverImg)img.src=coverImg;
   c.classList.toggle("full",!!coverImg&&mode==="full");c.classList.toggle("photo",!!coverImg&&mode==="bg");
-  $("#vShade").hidden=!(coverImg&&mode==="bg");$("#cDeco").hidden=!!coverImg;
+$("#cDeco").hidden=!!coverImg;
   $("#cImgDel").hidden=!coverImg;$("#cImgMode").hidden=!coverImg;
   const items=[[!!v("cBand"),"Le nom du groupe"],[!!v("cTitle"),"Le titre de la chanson"],[!!v("cAlbum"),"Le nom de l'album"],[!!v("cLogo"),"Votre logo"],[!!v("cSlogan"),"Un slogan"],[!!coverImg,coverImg?"Un visuel en lien avec la vente (image importée)":"Un visuel en lien avec la vente (à créer sur Canva puis importer)"],[false,"Une création originale et soignée"]];
   $("#coverCheck").innerHTML=items.map(([ok,l])=>`<li class="${ok?"done":""}"><span class="box">${ok?"✓":""}</span><span>${esc(l)}</span></li>`).join("")}
@@ -692,9 +690,8 @@ function loadImage(file){const fb=$("#cImgFb");
 $("#cImg").addEventListener("change",e=>{loadImage(e.target.files[0]);e.target.value=""});
 $("#cImgDel").onclick=()=>{coverImg=null;store.set("coverImg",null);$("#cImgFb").textContent="";renderCover()};
 document.querySelectorAll('input[name="imgmode"]').forEach(r=>r.addEventListener("change",()=>{store.set("coverMode",$("#modeBg").checked?"bg":"full");renderCover()}));
-const cov=$("#cover"),dz=$("#dropzone");
-["dragenter","dragover"].forEach(ev=>cov.addEventListener(ev,e=>{e.preventDefault();dz.hidden=false}));
-["dragleave","drop"].forEach(ev=>cov.addEventListener(ev,e=>{e.preventDefault();if(ev==="dragleave"&&cov.contains(e.relatedTarget))return;dz.hidden=true}));
+const cov=$("#cover");
+["dragenter","dragover"].forEach(ev=>cov.addEventListener(ev,e=>e.preventDefault()));
 cov.addEventListener("drop",e=>{const f=e.dataTransfer&&e.dataTransfer.files[0];loadImage(f)});
 document.addEventListener("paste",e=>{if(!$("#t-pochette").classList.contains("on"))return;const items=[...(e.clipboardData&&e.clipboardData.items||[])];const it=items.find(i=>i.kind==="file"&&/^image\//.test(i.type));if(it){e.preventDefault();loadImage(it.getAsFile())}});
 renderCover();
