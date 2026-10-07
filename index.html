@@ -156,6 +156,7 @@ textarea#lyrics{min-height:22rem;font-family:var(--mono);font-size:.92rem;line-h
 .upload{display:grid;gap:.5rem;padding:.8rem;border-radius:10px;background:var(--bg);border:1.5px dashed var(--line)}
 .upload:focus-within{border-color:var(--mustard)}
 .upload .opt{display:flex;gap:.4rem;align-items:center;font-weight:400;font-size:.92rem}
+.filein{max-width:100%;font-size:.9rem;padding:.4rem;border:1.5px solid var(--line);border-radius:8px;background:var(--surface);cursor:pointer}
 .form{display:grid;gap:.75rem}
 .form label{display:grid;gap:.25rem;font-weight:700;font-size:.92rem}
 .swatches{display:flex;gap:.5rem;flex-wrap:wrap}
@@ -388,10 +389,10 @@ Sept étapes dans la poche : la vente est conclue !</p>
         <label>Initiales du logo<input type="text" id="cLogo" value="VM" maxlength="3"></label>
         <div class="upload">
           <p style="font-weight:700;font-size:.92rem">Notre image Canva</p>
-          <p class="muted" style="font-size:.88rem">Dans Canva : Partager → Télécharger → PNG ou JPG. Puis importez le fichier ici ou glissez-le sur la pochette.</p>
+          <p class="muted" style="font-size:.88rem">Dans Canva : Partager → Télécharger → PNG ou JPG. Puis choisissez le fichier ci-dessous, glissez-le sur la pochette, ou copiez l'image et collez-la ici avec Ctrl + V.</p>
           <div class="row">
-            <label class="btn small" for="cImg" style="cursor:pointer">Importer une image</label>
-            <input type="file" id="cImg" accept="image/png,image/jpeg,image/webp,image/gif" class="sr">
+            <label for="cImg" class="sr">Choisir l'image de la pochette</label>
+            <input type="file" id="cImg" accept="image/*,.png,.jpg,.jpeg,.webp,.gif" class="filein">
             <button class="btn ghost small" id="cImgDel" hidden>Retirer l'image</button>
           </div>
           <div class="row" id="cImgMode" hidden role="radiogroup" aria-label="Utilisation de l'image">
@@ -437,7 +438,8 @@ Sept étapes dans la poche : la vente est conclue !</p>
     </div>
     <div class="grid2">
       <div class="panel">
-        <div class="panel-title"><h3>Créer notre quiz</h3><span class="mono muted" id="qCount">5 questions</span></div>
+        <div class="panel-title"><h3>Créer notre quiz</h3><span class="mono muted" id="qCount">0 / 5 questions écrites</span></div>
+        <p class="muted" style="font-size:.92rem">Pour chaque question : choisissez le type, écrivez la question et les réponses, puis cochez le rond devant la bonne réponse. Tout s'enregistre automatiquement.</p>
         <div id="builder" style="display:grid;gap:.8rem"></div>
         <div class="row"><button class="btn" id="playMine">Jouer notre quiz</button><button class="btn ghost small" id="playDemo">Jouer le quiz exemple</button></div>
       </div>
@@ -670,6 +672,31 @@ function renderCover(){const t=THEMES[theme];const c=$("#cover");c.style.backgro
   $("#cImgDel").hidden=!coverImg;$("#cImgMode").hidden=!coverImg;
   const items=[[!!v("cBand"),"Le nom du groupe"],[!!v("cTitle"),"Le titre de la chanson"],[!!v("cAlbum"),"Le nom de l'album"],[!!v("cLogo"),"Votre logo"],[!!v("cSlogan"),"Un slogan"],[!!coverImg,coverImg?"Un visuel en lien avec la vente (image importée)":"Un visuel en lien avec la vente (à créer sur Canva puis importer)"],[false,"Une création originale et soignée"]];
   $("#coverCheck").innerHTML=items.map(([ok,l])=>`<li class="${ok?"done":""}"><span class="box">${ok?"✓":""}</span><span>${esc(l)}</span></li>`).join("")}
+/* Image importée depuis Canva : réduite à 1200 px pour rester légère */
+let coverImg=store.get("coverImg",null);
+if(store.get("coverMode","full")==="bg")$("#modeBg").checked=true;
+function loadImage(file){const fb=$("#cImgFb");
+  if(!file)return;
+  const okType=/^image\//.test(file.type)||/\.(png|jpe?g|jfif|webp|gif)$/i.test(file.name||"");
+  if(!okType){fb.className="feedback bad";fb.textContent="Ce fichier n'est pas une image. Exportez votre pochette Canva en PNG ou JPG.";return}
+  if(file.size>25*1024*1024){fb.className="feedback bad";fb.textContent="Image trop lourde (plus de 25 Mo). Exportez-la en JPG depuis Canva.";return}
+  const r=new FileReader();
+  r.onerror=()=>{fb.className="feedback bad";fb.textContent="Impossible de lire ce fichier. Réessayez avec un autre export."};
+  r.onload=()=>{const im=new Image();im.onload=()=>{const max=1200,s=Math.min(1,max/Math.max(im.width,im.height));const cv=document.createElement("canvas");cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);
+      try{coverImg=cv.toDataURL("image/jpeg",.88)}catch(e){coverImg=r.result}
+      store.set("coverImg",coverImg);renderCover();
+      const sq=Math.abs(im.width/im.height-1)<.05;
+      fb.className="feedback "+(sq?"good":"bad");fb.textContent=sq?"Image importée !":"Image importée. Elle n'est pas carrée : elle sera recadrée. Dans Canva, choisissez le format 1080 × 1080 px.";};
+    im.onerror=()=>{fb.className="feedback bad";fb.textContent="Impossible d'afficher cette image."};im.src=r.result};
+  r.readAsDataURL(file)}
+$("#cImg").addEventListener("change",e=>{loadImage(e.target.files[0]);e.target.value=""});
+$("#cImgDel").onclick=()=>{coverImg=null;store.set("coverImg",null);$("#cImgFb").textContent="";renderCover()};
+document.querySelectorAll('input[name="imgmode"]').forEach(r=>r.addEventListener("change",()=>{store.set("coverMode",$("#modeBg").checked?"bg":"full");renderCover()}));
+const cov=$("#cover"),dz=$("#dropzone");
+["dragenter","dragover"].forEach(ev=>cov.addEventListener(ev,e=>{e.preventDefault();dz.hidden=false}));
+["dragleave","drop"].forEach(ev=>cov.addEventListener(ev,e=>{e.preventDefault();if(ev==="dragleave"&&cov.contains(e.relatedTarget))return;dz.hidden=true}));
+cov.addEventListener("drop",e=>{const f=e.dataTransfer&&e.dataTransfer.files[0];loadImage(f)});
+document.addEventListener("paste",e=>{if(!$("#t-pochette").classList.contains("on"))return;const items=[...(e.clipboardData&&e.clipboardData.items||[])];const it=items.find(i=>i.kind==="file"&&/^image\//.test(i.type));if(it){e.preventDefault();loadImage(it.getAsFile())}});
 renderCover();
 
 /* ---------- Quiz ---------- */
@@ -686,14 +713,15 @@ function renderBuilder(){$("#builder").innerHTML=mine.map((x,i)=>`<div class="qc
   <div class="row" style="justify-content:space-between"><b>Question ${i+1}</b>
   <select data-f="type" id="qt${i}" aria-label="Type de la question ${i+1}" style="width:auto">${TYPES.map(t=>`<option ${t===x.type?"selected":""}>${t}</option>`).join("")}</select></div>
   <input type="text" data-f="q" id="qq${i}" value="${esc(x.q)}" placeholder="Écrivez la question" aria-label="Énoncé de la question ${i+1}">
-  <div class="opts">${x.o.map((o,j)=>`<label class="opt"><input type="radio" name="ra${i}" data-f="a" value="${j}" ${x.a===j?"checked":""} aria-label="Bonne réponse ${j+1}"><input type="text" data-f="o" data-j="${j}" id="qo${i}_${j}" value="${esc(o)}" placeholder="Réponse ${j+1}${j===0?" (cochez la bonne)":""}"></label>`).join("")}</div>
+  <div class="opts">${x.o.map((o,j)=>`<div class="opt"><input type="radio" name="ra${i}" id="qa${i}_${j}" data-f="a" value="${j}" ${x.a===j?"checked":""} title="Cocher si c'est la bonne réponse" aria-label="Réponse ${j+1} est la bonne réponse"><input type="text" data-f="o" data-j="${j}" id="qo${i}_${j}" value="${esc(o)}" placeholder="Réponse ${j+1}" aria-label="Réponse ${j+1} de la question ${i+1}"></div>`).join("")}</div>
  </div>`).join("")}
 $("#builder").addEventListener("input",e=>{const card=e.target.closest(".qcard");if(!card)return;const x=mine[+card.dataset.i],f=e.target.dataset.f;
   if(f==="q")x.q=e.target.value;else if(f==="o")x.o[+e.target.dataset.j]=e.target.value;else if(f==="a")x.a=+e.target.value;
   else if(f==="type"){x.type=e.target.value;if(x.type==="Vrai / faux"){x.o=["Vrai","Faux"];if(x.a>1)x.a=0}else if(x.o.length<3){x.o=[...x.o,""]}renderBuilder()}
-  store.set("quiz",mine)});
+  store.set("quiz",mine);countQ()});
+function countQ(){$("#qCount").textContent=mine.filter(x=>x.q.trim()).length+" / 5 questions écrites"}
 $("#builder").addEventListener("change",e=>{if(e.target.dataset.f==="a"){const card=e.target.closest(".qcard");mine[+card.dataset.i].a=+e.target.value;store.set("quiz",mine)}});
-renderBuilder();
+renderBuilder();countQ();
 let play={set:DEMO,i:0,score:0,answered:false,title:"Quiz exemple"};
 function renderPlay(){const x=play.set[play.i];$("#playTitle").textContent=play.title;$("#playProg").textContent=`${play.i+1} / ${play.set.length}`;$("#playType").textContent=x.type;$("#playQ").textContent=x.q||"(question vide)";
   $("#playA").innerHTML=x.o.map((o,j)=>`<button data-j="${j}">${esc(o||"…")}</button>`).join("");$("#playFb").textContent="";$("#playScore").textContent=`Score : ${play.score}`;play.answered=false;$("#nextQ").textContent=play.i<play.set.length-1?"Question suivante":"Recommencer"}
